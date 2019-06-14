@@ -3,8 +3,14 @@
 @section('title', "Usuarios")
 
 @section('content')
-    <h1>{{$title}}</h1>
+    <div class="d-flex justify-content-between align-items-end mb-3">
+        <h1 class="pb-1">{{ $title }}</h1>
+        <p>
+            <a href="{{ route('users.create') }}" class="btn btn-primary">Nuevo usuario</a>
+        </p>
+    </div>
 
+    @if ($users->isNotEmpty())
     <table class="table">
         <thead class="thead-dark">
           <tr>
@@ -15,40 +21,33 @@
           </tr>
         </thead>
         <tbody>
-            @forelse ($users as $user)
+            @foreach ($users as $user)
                 <tr>
                     <th scope="row">{{$user->id}}</th>
                     <td>{{$user->name}}</td>
                     <td>{{$user->email}}</td>
                     <td>
-                        {{--  
-                        <a href="/usuarios/{{$user->id}}" class="btn btn-primary" title="Ver Detalles">
-                            <i class="far fa-eye"></i>
-                        </a>  
-                        <a href="{{ url("/usuarios/{$user->id}") }}" class="btn btn-primary" title="Ver Detalles">
-                            <i class="far fa-eye"></i>
-                        </a>
-                        <a href="{{ action('UserController@show', ['id'=> $user->id]) }}" class="btn btn-primary" title="Ver Detalles">
-                            <i class="far fa-eye"></i>
-                        </a>
-                        --}}
-                        <a href="{{ route('users.show', ['id'=> $user->id]) }}" class="btn btn-primary" title="Ver Detalles">
-                            <i class="far fa-eye"></i>
-                        </a>
-                        <a href="{{ route('users.edit', ['id'=> $user->id]) }}" class="btn btn-success" title="Editar">
-                            <i class="far fa-edit"></i>
-                        </a>
-                        </a>
-                        <a href="" class="btn btn-danger" title="Eliminar">
+                        <form action="{{ route('users.delete', $user) }}" method="POST">
+                            {{ method_field('DELETE') }}
+                            {!! csrf_field() !!}
+                            <a href="{{ route('users.show', $user) }}" class="btn btn-primary" title="Ver Detalles">
+                                <i class="far fa-eye"></i>
+                            </a>
+                            <a href="{{ route('users.edit', $user) }}" class="btn btn-success" title="Editar">
+                                <i class="far fa-edit"></i>
+                            </a>
+                            <button type="submit" class="btn btn-danger" title="Eliminar">
                                 <i class="fas fa-minus"></i>
-                        </a>
+                            </button>
+                        </form>
                     </td>
                 </tr>
-            @empty
-                <p>No hay usuarios registrados</p>
-            @endforelse
+            @endforeach
         </tbody>
     </table>
+    @else
+        <p>No hay usuarios registrados</p>
+    @endif
 
 @endsection
     

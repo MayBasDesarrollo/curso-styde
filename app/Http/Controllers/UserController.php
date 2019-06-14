@@ -6,6 +6,7 @@ use App\{User, UserProfile};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\CreateUserRequest;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -13,28 +14,13 @@ class UserController extends Controller
 
         $users = User::all();
 
-        //dd($users);
-
         $title = 'Listado de Usuarios';
 
         return view('users.index', compact('users','title'));
 
     }
 
-    //public function show($id){
     public function show(User $user){
-
-        /*$users = DB::table('users')
-            ->join('user_profiles', 'users.id', '=', 'user_profiles.user_id')
-            ->get();
-        */
-
-        //$user = User::findOrFail($id);
-        // $user = User::find($id);
-
-        // if($user == null){
-        //     return response()->view('errors.404', [], 404);
-        // }
 
         return view('users.show', compact('user'));
     }
@@ -50,18 +36,32 @@ class UserController extends Controller
     }
     
     public function edit(User $user){
-        //return "El usuario $id a sido modificado correctamente";
         return view('users.edit', compact('user'));
     }
 
     public function update(User $user){
 
-        $data = request()->all();
-        $data['password'] = bcrypt($data['password']);
+        $data = request()->validate([
+            'name' => 'required',
+            'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
+            'password' => '',
+        ]);
+
+        if($data['password'] != null) {
+            $data['password'] = bycrypt($data['password']);
+        }else{
+            unset($data['password']);
+        }
 
         $user->update($data);
 
-        //return redirect("/usuarios/{$user->id}");
         return redirect()->route("users.show", ['user' => $user]);
+    }
+
+    public function destroy(User $user)
+    {
+        $user->delete();
+
+        return redirect()->route('users.index');
     }
 }

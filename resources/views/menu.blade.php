@@ -8,9 +8,6 @@
             <li class="nav-item active">
                 <a class="nav-link" href="{{ route('users.index') }}">Usuarios</a>
             </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="{{ route('users.create') }}">Crear Usuario <span class="sr-only">(current)</span></a>
-            </li>
         </ul>
     </div>
 </nav>
