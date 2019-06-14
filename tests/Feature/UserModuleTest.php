@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\User;
+use App\{User, UserProfile};
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -116,7 +116,7 @@ class UserModuleTest extends TestCase
 
     //Mia
     /** @test */
-    /* function the_bio_is_required()
+    function the_bio_is_required()
     {
         $this->from('usuarios/nuevo')
             ->post('/usuarios/', $this->getValidData([
@@ -126,7 +126,7 @@ class UserModuleTest extends TestCase
             ->assertSessionHasErrors(['bio']);
         
         $this->assertEquals(0,User::count());
-    } */
+    }
 
     //Mia
     /** @test */

@@ -41,7 +41,7 @@ class CreateUserRequest extends FormRequest
         ];
     }*/
 
-    public function createUser(Type $var = null)
+    public function createUser()
     {
         
         DB::transaction(function () {
