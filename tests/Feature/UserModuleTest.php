@@ -66,25 +66,20 @@ class UserModuleTest extends TestCase
             ->assertStatus(200)
             ->assertSee('Nuevo Usuario');
     }
-
+/*-----------------------------------------------------------------------------------------------------------------*/
     /** @test */
     function it_creates_a_new_user()
     {
-        $this->withoutExceptionHandling();
-
+        //$this->withoutExceptionHandling();
         $this->post('/usuarios/', $this->getValidData())->assertRedirect('usuarios');
-
         $this->assertCredentials([
             'name' => 'May',
             'email' => 'may@ike.com',
             'password' => '123456',
-            'bio' => 'Programador de Laravel y aprendiendo',
-            'twitter' => 'https://twitter.com/Mayerlin_19'
         ]);
-
         $this->assertDatabaseHas('user_profiles', [
             'bio' => 'Programador de Laravel y Vue.js',
-            'twitter' => 'https://twitter.com/mayerlin_19',
+            'twitter' => 'https://twitter.com/sileence',
             'user_id' => User::finByEmail('may@ike.com')->id,
         ]);
     }
@@ -125,38 +120,32 @@ class UserModuleTest extends TestCase
             ->assertRedirect('usuarios/nuevo')
             ->assertSessionHasErrors(['bio']);
         
-        $this->assertEquals(0,User::count());
+        $this->assertDatabaseEmpty('users');
     }
 
     //Mia
     /** @test */
-    /*function the_twitter_is_url()
+    function the_twitter_is_url()
     {
         //$this->withoutExceptionHandling();
 
         $this->from('usuarios/nuevo')
-            ->post('/usuarios/', [
-                'name' => 'Mayerlin',
-                'email' => 'may@ike.com',
-                'password' => '123456',
-                'bio' => 'Development php and Vue.js',
-                'twitter' => 'Development',
-            ])
+            ->post('/usuarios/', $this->getValidData([
+                'twitter' => 'holaaa',
+            ]))
             ->assertRedirect('usuarios/nuevo')
             ->assertSessionHasErrors(['twitter']);
         
-        $this->assertEquals(0,User::count());
-    }*/
+        $this->assertDatabaseEmpty('users');
+    }
 
     /** @test */
     function the_name_is_required()
     {
         $this->from('usuarios/nuevo')
-            ->post('/usuarios/', [
+            ->post('/usuarios/', $this->getValidData([
                 'name' => '',
-                'email' => 'may@ike.com',
-                'password' => '123456'
-            ])
+            ]))
             ->assertRedirect('usuarios/nuevo')
             ->assertSessionHasErrors(['name']);
         
@@ -226,16 +215,16 @@ class UserModuleTest extends TestCase
         //$this->withoutExceptionHandling();
 
         $this->from('usuarios/nuevo')
-            ->post('/usuarios/', [
-                'name' => 'Mayerlin',
-                'email' => 'may@ike.com',
+            ->post('/usuarios/', $this->getValidData([
                 'password' => '12345',
-            ])
+            ]))
             ->assertRedirect('usuarios/nuevo')
             ->assertSessionHasErrors(['password']);
         
-        $this->assertEquals(0,User::count());
+        $this->assertDatabaseEmpty('users');
     }
+
+/*-----------------------------------------------------------------------------------------------------------------*/
 
     /** @test */
     function it_loads_the_edit_user_page()
@@ -400,7 +389,7 @@ class UserModuleTest extends TestCase
             'email' => 'may@ike.com',
             'password' => '123456',
             'bio' => 'Programador de Laravel y Vue.js',
-            'twitter' => 'https://twitter.com/mayerlin_19'
+            'twitter' => 'https://twitter.com/sileence',
         ], $custom));
     }
 }

@@ -15,4 +15,12 @@ abstract class TestCase extends BaseTestCase
             "Failed asserting the table [%s] is empty. %s %s found.", $table, $total, str_plural('row', $total)
         ));
     }
+
+    /* protected function assertDatabasefull($table, $connection = null)
+    {
+        $total = $this->getConnection($connection)->table($table)->count();
+        $this->assertSame(1, $total, sprintf(
+            "Failed asserting the table [%s] is empty. %s %s found.", $table, $total, str_plural('row', $total)
+        ));
+    } */
 }

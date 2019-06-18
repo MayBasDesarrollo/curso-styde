@@ -40,7 +40,7 @@ class CreateUserRequest extends FormRequest
             'name.required' => 'El campo nombre es obligatorio'
         ];
     }*/
-
+    
     public function createUser()
     {
         
