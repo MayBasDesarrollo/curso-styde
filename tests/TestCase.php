@@ -16,11 +16,12 @@ abstract class TestCase extends BaseTestCase
         ));
     }
 
-    /* protected function assertDatabasefull($table, $connection = null)
+    /* protected function assertDatabasecount($table, $connection = null)
     {
         $total = $this->getConnection($connection)->table($table)->count();
         $this->assertSame(1, $total, sprintf(
             "Failed asserting the table [%s] is empty. %s %s found.", $table, $total, str_plural('row', $total)
         ));
     } */
+
 }

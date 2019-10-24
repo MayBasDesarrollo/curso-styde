@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class CreateUserRequest extends FormRequest
 {
@@ -30,7 +31,9 @@ class CreateUserRequest extends FormRequest
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => 'required|min:6|max:10',
             'bio' => 'required',
-            'twitter' => ['nullable','url'] 
+            'twitter' => ['nullable','url'] ,
+            //'profession_id' => 'exists:professions,id',
+            'profession_id' => Rule::exists('professions', 'id')->whereNull('deleted_at'),
         ];
     }
 
@@ -51,12 +54,13 @@ class CreateUserRequest extends FormRequest
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => bcrypt($data['password']),
+                'profession_id' => $data['profession_id'] ?? null,
             ]);
             
             $user->profile()->create([
                 'bio'=>$data['bio'],
-                'twitter'=> array_get($data,'twitter'),
-                //'twitter'=>$data['twitter'] ?? null,
+                'twitter'=>$data['twitter'] ?? null,
+                //'twitter'=> array_get($data,'twitter'),
             ]);
         });
     }
