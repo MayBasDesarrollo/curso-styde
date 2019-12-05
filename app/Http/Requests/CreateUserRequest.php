@@ -31,9 +31,12 @@ class CreateUserRequest extends FormRequest
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => 'required|min:6|max:10',
             'bio' => 'required',
-            'twitter' => ['nullable','url'] ,
+            'twitter' => ['nullable','url', 'present'] ,
             //'profession_id' => 'exists:professions,id',
-            'profession_id' => Rule::exists('professions', 'id')->whereNull('deleted_at'),
+            'profession_id' => [
+                'nullable', 'present',
+                Rule::exists('professions', 'id')->whereNull('deleted_at'),
+            ],
         ];
     }
 
@@ -54,13 +57,13 @@ class CreateUserRequest extends FormRequest
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => bcrypt($data['password']),
-                'profession_id' => $data['profession_id'] ?? null,
             ]);
             
             $user->profile()->create([
                 'bio'=>$data['bio'],
-                'twitter'=>$data['twitter'] ?? null,
+                'twitter'=>$data['twitter'],
                 //'twitter'=> array_get($data,'twitter'),
+                'profession_id' => $data['profession_id'],
             ]);
         });
     }

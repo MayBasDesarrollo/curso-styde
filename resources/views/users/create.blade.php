@@ -48,6 +48,24 @@
                 </div>
               @endif
             </div>
+
+            <div class="form-group">
+              <label for="profession_id">Profesión</label>
+              <select name="profession_id" id="profession_id" @if ($errors->has('profession_id') ) class="form-control is-invalid" @else class="form-control" @endif>
+                <option value="">Selecciona una profesión</option>
+                  @foreach($professions as $profession)
+                      <option value="{{ $profession->id }}"{{ old('profession_id') == $profession->id ? ' selected' : '' }}>
+                          {{ $profession->title }}
+                      </option>
+                  @endforeach
+              </select>
+              @if ($errors->has('profession_id') )
+                <div class="invalid-feedback">
+                  {{ $errors->first('bio') }}
+                </div>
+              @endif
+            </div>
+
             <div class="form-group">
               <label for="twitter">Twitter</label>
               <input type="text" @if ($errors->has('twitter') ) class="form-control is-invalid" @else class="form-control" @endif id="twitter" name="twitter" value="{{ old('twitter') }}">

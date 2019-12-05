@@ -64,9 +64,14 @@ class UserModuleTest extends TestCase
     /** @test */
     function it_loads_new_users_page()
     {
+        $profession = factory(Profession::class)->create();
+
         $this->get('/usuarios/nuevo')
             ->assertStatus(200)
-            ->assertSee('Nuevo Usuario');
+            ->assertSee('Nuevo Usuario')
+            ->assertViewHas('professions', function ($professions) use ($profession) {
+                return $professions->contains($profession);
+            });
     }
 /*-----------------------------------------------------------------------------------------------------------------*/
     /** @test */
@@ -78,12 +83,12 @@ class UserModuleTest extends TestCase
             'name' => 'May',
             'email' => 'may@ike.com',
             'password' => '123456',
-            'profession_id' => $this->profession->id,
         ]);
         $this->assertDatabaseHas('user_profiles', [
             'bio' => 'Programador de Laravel y Vue.js',
             'twitter' => 'https://twitter.com/sileence',
             'user_id' => User::finByEmail('may@ike.com')->id,
+            'profession_id' => $this->profession->id,
         ]);
     }
 
@@ -127,13 +132,13 @@ class UserModuleTest extends TestCase
             'name' => 'May',
             'email' => 'may@ike.com',
             'password' => '123456',
-            'profession_id' => null,
             ]);
             
         //vERIFICO QUE SE HAYA CREADO EL PERFIL DEL USUARIO
         $this->assertDatabaseHas('user_profiles', [
             'bio' => 'Programador de Laravel y Vue.js',
             'user_id' => User::finByEmail('may@ike.com')->id,
+            'profession_id' => null,
         ]);
     }
 
@@ -451,13 +456,13 @@ class UserModuleTest extends TestCase
     {
         $this->profession = factory(Profession::class)->create();
 
-        return array_filter(array_merge([
+        return array_merge([
             'name' => 'May',
             'email' => 'may@ike.com',
             'password' => '123456',
             'profession_id' => $this->profession->id,
             'bio' => 'Programador de Laravel y Vue.js',
             'twitter' => 'https://twitter.com/sileence',
-        ], $custom));
+        ], $custom);
     }
 }

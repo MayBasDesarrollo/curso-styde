@@ -4,6 +4,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\User;
 use App\Profession;
+use App\UserProfile;
 
 class UserSeeder extends Seeder
 {
@@ -14,51 +15,24 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        
-        //$profession = DB::select('SELECT id FROM profession WHERE title = "Back-End Develope"');
-        //$profession = DB::select('SELECT id FROM profession WHERE title = :title', ['title'=>'Back-End Develope']);
-        
-        // $profession = DB::table('profession')->select('id')->take(1)->get();
-        // dd($profession->first()->id);
-
-        // $profession = DB::table('profession')
-        //     ->select('id')
-        //     ->where(['title' => 'Back-End Developer'])
-        //     ->first();
-
         $professionID =  Profession::whereTitle('Back-End Developer')->value('id');
 
-        // DB::table('Users')->insert([
-        //     'name'=> 'Mayerlin Bastidas',
-        //     'email'=> 'mbastidas@ike.com',
-        //     'password'=> bcrypt('laravel'),
-        //     'profession_id' => DB::table('professions')->whereTitle('Back-End Developer')->value('id'),
-        // ]);
-
-        // User::create([
-        //     'name'=> 'Mayerlin Bastidas',
-        //     'email'=> 'mbastidas@ike.com',
-        //     'password'=> bcrypt('laravel'),
-        //     'profession_id' => $professionID,
-        // ]);
-
-        factory(User::class)->create([
+        $user = factory(User::class)->create([
             'name'=> 'Mayerlin Bastidas',
             'email'=> 'mbastidas@ike.com',
             'password'=> bcrypt('laravel'),
-            'profession_id' => $professionID,
         ]);
 
-        factory(User::class)->create([
+        $user->profile()->create([
+            'bio' =>'Programadora',
             'profession_id' => $professionID,
+
         ]);
 
-        factory(App\User::class, 48)->create();
-
-        // DB::table('Users')->insert([
-        //     'name'=> 'Matias',
-        //     'email'=> 'matias@ike.com',
-        //     'password'=> bcrypt('laravel'),
-        // ]);
+        factory(User::class, 29)->create()->each(function ($user) {
+            $user->profile()->create(
+                factory(\App\UserProfile::class)->raw()
+            );
+        });
     }
 }
