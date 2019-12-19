@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\{Profession, User, UserProfile};
+use App\{Profession, Skill, User, UserProfile};
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -64,13 +64,20 @@ class UserModuleTest extends TestCase
     /** @test */
     function it_loads_new_users_page()
     {
+        $this->withoutExceptionHandling();
+        
         $profession = factory(Profession::class)->create();
+        $skillA = factory(Skill::class)->create();
+        $skillB = factory(Skill::class)->create();
 
         $this->get('/usuarios/nuevo')
             ->assertStatus(200)
             ->assertSee('Nuevo Usuario')
             ->assertViewHas('professions', function ($professions) use ($profession) {
                 return $professions->contains($profession);
+            })
+            ->assertViewHas('skills', function ($skills) use ($skillA,$skillB) {
+                return $skills->contains($skillA) && $skills->contains($skillB);
             });
     }
 /*-----------------------------------------------------------------------------------------------------------------*/
