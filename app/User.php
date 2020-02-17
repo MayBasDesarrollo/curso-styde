@@ -29,10 +29,6 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    protected $casts = [
-        'is_admin' => 'boolean', 
-    ];
-
     public static function finByEmail($email){
         //stactic es equivalente a usar User porque estamos dentro de la clase user.
         return static::where(compact('email'))->first();
@@ -54,6 +50,6 @@ class User extends Authenticatable
     }
 
     public function isAdmin(){
-        return $this->is_admin;
+        return $this->role === 'admin';
     }
 }

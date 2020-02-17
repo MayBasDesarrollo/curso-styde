@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Role;
 use App\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
@@ -30,6 +31,7 @@ class CreateUserRequest extends FormRequest
             'name' => 'required',
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => 'required|min:6|max:10',
+            'role' => ['nullable', Rule::in(Role::getList())],
             'bio' => 'required',
             'twitter' => ['nullable','url', 'present'] ,
             //'profession_id' => 'exists:professions,id',
@@ -57,11 +59,15 @@ class CreateUserRequest extends FormRequest
         DB::transaction(function () {
             $data = $this->validated();
 
-            $user = User::create([
+            $user = new User([
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => bcrypt($data['password']),
             ]);
+
+            $user->role = $data['role'] ?? 'user';
+
+            $user->save();
             
             $user->profile()->create([
                 'bio'=>$data['bio'],
