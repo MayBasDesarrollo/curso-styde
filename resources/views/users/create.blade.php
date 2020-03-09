@@ -11,8 +11,7 @@
 
 
     <form method="POST" action="{{ url('usuarios') }}">
-        
-        @include('users._fields')
+        @render('UserFields', ['user' => $user])
 
         <div class="form-group mt-4">
           <button class="btn btn-primary float-right" type="submit">Enviar</button>
