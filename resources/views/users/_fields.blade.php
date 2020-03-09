@@ -44,7 +44,7 @@
     <select name="profession_id" id="profession_id" @if ($errors->has('profession_id') ) class="form-control is-invalid" @else class="form-control" @endif>
       <option value="">Selecciona una profesión</option>
         @foreach($professions as $profession)
-            <option value="{{ $profession->id }}"{{ old('profession_id', $user->profile->profession_id) == $profession->id ? ' selected' : '' }}>
+            <option value="{{ $profession->id }}">
                 {{ $profession->title }}
             </option>
         @endforeach

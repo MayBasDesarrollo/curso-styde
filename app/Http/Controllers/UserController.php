@@ -27,13 +27,9 @@ class UserController extends Controller
 
     public function create()
     {
-        $professions = Profession::orderBy('title', 'ASC')->get();
-        $skills = Skill::orderBy('name', 'ASC')->get();
-        $roles = trans('users.roles');
-
         $user = new User;
 
-        return view('users.create', compact('professions', 'skills', 'roles', 'user'));
+        return view('users.create', compact('user'));
     }
 
     public function store(CreateUserRequest $request){            
@@ -44,11 +40,7 @@ class UserController extends Controller
     
     public function edit(User $user)
     {
-        $professions = Profession::orderBy('title', 'ASC')->get();
-        $skills = Skill::orderBy('name', 'ASC')->get();
-        $roles = trans('users.roles');
-
-        return view('users.edit', compact('user', 'professions', 'skills', 'roles'));
+        return view('users.edit', compact('user'));
     }
 
     public function update(User $user){
