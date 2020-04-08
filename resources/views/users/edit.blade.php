@@ -16,7 +16,7 @@
       
         {{ method_field('PUT') }}
   
-        @render('UserFields', ['user' => $user])
+        {{-- @render('UserFields', ['user' => $user]) --}}
         
         <div class="form-group mt-4">
           <button class="btn btn-primary float-right" type="submit">Actualizar</button>

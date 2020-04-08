@@ -13,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
+        Blade::component('shared._card', 'card');
     }
 
     /**
