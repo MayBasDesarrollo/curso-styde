@@ -13,21 +13,22 @@ trait TestHelpers
         ));
     }
 
-    /* protected function assertDatabasecount($table, $connection = null)
+    protected function assertDatabaseCount($table, $expected, $connection = null)
     {
-        $total = $this->getConnection($connection)->table($table)->count();
-        $this->assertSame(1, $total, sprintf(
-            "Failed asserting the table [%s] is empty. %s %s found.", $table, $total, str_plural('row', $total)
+        $found = $this->getConnection($connection)->table($table)->count();
+        $this->assertSame($expected, $found, sprintf(
+            "Failed asserting the table [%s] is has %s %s. %s %s found.", 
+            $table, $expected, str_plural('row', $found), $found, str_plural('row', $found)
         ));
-    } */
+    }
 
     protected function withData(array $custom = [])
     {
-        return array_merge($this->defaulData(), $custom);
+        return array_merge($this->defaultData(), $custom);
     }
 
-    protected function defaulData()
+    protected function defaultData()
     {
-        return $this->defaulData;
+        return $this->defaultData;
     }
 }

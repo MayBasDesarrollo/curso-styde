@@ -4,14 +4,13 @@ namespace Tests\Feature\Admin;
 
 use Tests\TestCase;
 use App\{Profession,Skill,User};
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CreateUsersTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected $defaulData = [
+    protected $defaultData = [
         'name' => 'May',
         'email' => 'may@ike.com',
         'password' => '123456',
