@@ -121,7 +121,7 @@ class UpdateUsersTest extends TestCase
             ->assertRedirect("usuarios/{$user->id}/editar")
             ->assertSessionHasErrors(['name']);
         
-            $this->assertDatabaseMissing('users', ['email' => 'duilio@styde.net']);
+            $this->assertDatabaseMissing('users', ['name' => '']);
     }
 
     /** @test */
@@ -136,7 +136,7 @@ class UpdateUsersTest extends TestCase
             ]))
             ->assertRedirect("usuarios/{$user->id}/editar")
             ->assertSessionHasErrors(['email']);
-        $this->assertDatabaseMissing('users', ['name' => 'Mayerlin Bastidas']);
+        $this->assertDatabaseMissing('users', ['email' => 'correo-no-valido']);
     }
 
     /** @test */
@@ -181,6 +181,23 @@ class UpdateUsersTest extends TestCase
     }
 
     /** @test */
+    function the_email_is_required()
+    {
+        $this->handleValidationExceptions();
+
+        $user = factory(User::class)->create();
+        
+        $this->from("usuarios/{$user->id}/editar")
+            ->put("usuarios/{$user->id}", $this->withData([
+                'email' => '',
+            ]))
+            ->assertRedirect("usuarios/{$user->id}/editar")
+            ->assertSessionHasErrors(['email']);
+        
+        $this->assertDatabaseMissing('users', ['email' => '']);
+    }
+
+    /** @test */
     function the_password_is_optional()
     {
         $oldPassword = 'CLAVE_ANTERIOR';
@@ -199,4 +216,161 @@ class UpdateUsersTest extends TestCase
             'password' => $oldPassword // VERY IMPORTANT!
         ]);
     }    
+
+    /** @test */
+    function the_role_is_required()
+    {
+        $this->handleValidationExceptions();
+
+        $user = factory(User::class)->create();
+        
+        $this->from("usuarios/{$user->id}/editar")
+            ->put("usuarios/{$user->id}", $this->withData([
+                'role' => '',
+            ]))
+            ->assertRedirect("usuarios/{$user->id}/editar")
+            ->assertSessionHasErrors(['role']);
+        
+        $this->assertDatabaseMissing('users', ['role' => '']);
+    }
+
+    /** @test */
+    function the_bio_is_required()
+    {
+        $this->handleValidationExceptions();
+
+        $user = factory(User::class)->create();
+        
+        $this->from("usuarios/{$user->id}/editar")
+            ->put("usuarios/{$user->id}", $this->withData([
+                'bio' => '',
+            ]))
+            ->assertRedirect("usuarios/{$user->id}/editar")
+            ->assertSessionHasErrors(['bio']);
+        
+        $this->assertDatabaseMissing('users', ['email' => 'duilio@styde.net']);
+    }
+
+    // mias
+    /** @test */
+    function the_twitter_field_is_optional()
+    {
+        $user = factory(User::class)->create();
+
+        $user->profile()->save(factory(UserProfile::class)->make([
+            'twitter' => 'mayerlin19',
+        ]));
+        
+        $this->from("usuarios/{$user->id}/editar")
+            ->put("usuarios/{$user->id}", $this->withData([
+                'twitter' => '',
+            ]))
+            ->assertRedirect("usuarios/{$user->id}");
+
+        $this->assertDatabaseHas( 'user_profiles', [
+            'user_id' => $user->id,
+            'twitter' => null,
+        ]);
+    }
+
+    /** @test */
+    function the_twitter_is_url()
+    {
+        $this->handleValidationExceptions();
+
+        $user = factory(User::class)->create();
+
+        $this->from("usuarios/{$user->id}/editar")
+            ->put("usuarios/{$user->id}", $this->withData([
+                'twitter' => 'holaaa',
+            ]))
+            ->assertRedirect("usuarios/{$user->id}/editar")
+            ->assertSessionHasErrors(['twitter']);
+        
+        $this->assertDatabaseMissing('user_profiles', ['twitter' => 'holaaa']);
+    }
+
+    /** @test */
+    function the_profession_id_field_is_optional()
+    {
+        $user = factory(User::class)->create();
+        $profession = factory(Profession::class)->create();
+        $user->profile()->save(factory(UserProfile::class)->make([
+            'profession_id' => $profession,
+        ]));
+        
+        $this->from("usuarios/{$user->id}/editar")
+            ->put("usuarios/{$user->id}", $this->withData([
+                'profession_id' => '',
+            ]))
+            ->assertRedirect("usuarios/{$user->id}");
+            
+        //vERIFICO QUE SE HAYA CREADO EL PERFIL DEL USUARIO
+        $this->assertDatabaseHas('user_profiles', [
+            'user_id' => $user->id,
+            'profession_id' => null,
+        ]);
+    }
+
+    /** @test */
+    function the_profession_must_be_valid()
+    {
+        $this->handleValidationExceptions();
+
+        $user = factory(User::class)->create();
+
+        $this->from("usuarios/{$user->id}/editar")
+            ->put("usuarios/{$user->id}", $this->withData([
+                'profession_id' => '999',
+            ]))
+            ->assertRedirect("usuarios/{$user->id}/editar")
+            ->assertSessionHasErrors(['profession_id']);
+        
+        $this->assertDatabaseMissing('user_profiles', ['profession_id' => '999']);
+    }
+
+    /** @test */
+    function the_skills_must_an_array()
+    {
+        $this->handleValidationExceptions();
+
+        $user = factory(User::class)->create();
+
+        $this->from("usuarios/{$user->id}/editar")
+            ->put("usuarios/{$user->id}", $this->withData([
+                'skills' => 'PHP, TDD',
+            ]))
+            ->assertRedirect("usuarios/{$user->id}/editar")
+            ->assertSessionHasErrors(['skills']);
+
+    }
+
+    /** @test */
+    function the_skills_must_be_valid()
+    {
+        $this->handleValidationExceptions();
+
+        $user = factory(User::class)->create();
+
+        $skillA = factory(Skill::class)->create();
+        $skillB = factory(Skill::class)->create();
+
+        $this->from("usuarios/{$user->id}/editar")
+            ->put("usuarios/{$user->id}", $this->withData([
+                'skills' => [$skillA->id, $skillB->id + 1],
+            ]))
+            ->assertRedirect("usuarios/{$user->id}/editar")
+            ->assertSessionHasErrors(['skills']);
+        
+        $this->assertDatabaseMissing('user_skill', [
+            'user_id' => $user->id,
+            'skill_id' => $skillA,
+        ]);
+
+        $this->assertDatabaseMissing('user_skill', [
+            'user_id' => $user->id,
+            'skill_id' => $skillB,
+        ]);     
+    }
+    //fin mias
 }
